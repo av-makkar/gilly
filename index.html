@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Happy Birthday Gilly!</title>
+<style>
+  :root{
+    --matcha:#a8d08d; --matcha-d:#6fa35a; --cream:#fff8ec; --pink:#ffb6c8;
+    --brown:#8a5a3c; --tea:#e8c9a0; --ink:#4a3b32;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{min-height:100%}
+  body{
+    font-family:"Trebuchet MS","Comic Sans MS",system-ui,sans-serif;
+    color:var(--ink);
+    background:linear-gradient(160deg,#fff3e0,#ffe3ec 45%,#e4f5d8);
+    background-attachment:fixed;
+    overflow-x:hidden;
+    text-align:center;
+  }
+  canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
+  .float-layer{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+  .float{position:absolute;bottom:-60px;border-radius:50%;
+    background:radial-gradient(circle at 30% 30%,#fff,rgba(255,255,255,.35) 60%,rgba(255,182,200,.4));
+    border:2px solid rgba(255,255,255,.8);
+    animation:rise linear infinite}
+  @keyframes rise{to{transform:translateY(-120vh) translateX(30px);opacity:.2}}
+  .leaf{position:fixed;top:-40px;font-size:24px;pointer-events:none;z-index:1;animation:fall linear infinite}
+  @keyframes fall{
+    0%{transform:translateY(0) rotate(0)}
+    100%{transform:translateY(110vh) rotate(360deg)}
+  }
+  main{position:relative;z-index:2;max-width:900px;margin:0 auto;padding:30px 18px 80px}
+  h1{
+    font-size:clamp(2.4rem,8vw,4.6rem);
+    color:var(--matcha-d);
+    text-shadow:3px 3px 0 #fff,6px 6px 0 var(--pink);
+    margin-top:10px;
+    animation:pop 1s cubic-bezier(.3,1.6,.5,1) both;
+  }
+  h1 span{display:inline-block;animation:wave 2s ease-in-out infinite}
+  @keyframes wave{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+  @keyframes pop{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+  .sub{font-size:1.2rem;margin:8px 0 18px;min-height:1.6em}
+  .sub::after{content:"|";animation:blink 1s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+
+  /* mascot */
+  .mascot{width:190px;margin:0 auto;animation:bounce 1.8s ease-in-out infinite;cursor:pointer}
+  @keyframes bounce{0%,100%{transform:translateY(0) scaleY(1)}45%{transform:translateY(-24px) scaleY(1.05)}
+    55%{transform:translateY(-24px)}90%{transform:translateY(0) scaleY(.92)}}
+  .eye{animation:blinkEye 4s infinite;transform-origin:center;transform-box:fill-box}
+  @keyframes blinkEye{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
+  .sprout{transform-origin:50% 100%;transform-box:fill-box;animation:sway 2s ease-in-out infinite}
+  @keyframes sway{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(8deg)}}
+  .hat{animation:tilt 3s ease-in-out infinite;transform-origin:center;transform-box:fill-box}
+  @keyframes tilt{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+
+  button.wish{
+    margin-top:18px;font-size:1.2rem;font-family:inherit;
+    padding:14px 30px;border:none;border-radius:40px;cursor:pointer;
+    color:#fff;background:linear-gradient(135deg,var(--matcha-d),#8cc572);
+    box-shadow:0 6px 0 #4f7e3d,0 10px 20px rgba(0,0,0,.15);
+    transition:transform .1s,box-shadow .1s;
+  }
+  button.wish:hover{transform:translateY(-2px) scale(1.04)}
+  button.wish:active{transform:translateY(4px);box-shadow:0 2px 0 #4f7e3d}
+  #wishText{margin-top:16px;font-size:1.3rem;min-height:2em;color:var(--brown);font-weight:bold}
+
+  section{margin-top:56px}
+  h2{font-size:2rem;color:var(--brown);margin-bottom:18px}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:22px}
+  .card{
+    background:rgba(255,255,255,.75);backdrop-filter:blur(4px);
+    border-radius:28px;padding:22px;box-shadow:0 8px 24px rgba(120,80,60,.15);
+    transition:transform .3s;
+  }
+  .card:hover{transform:translateY(-8px) rotate(-1.5deg)}
+  .card svg{width:130px;height:170px}
+  .card p{margin-top:8px;line-height:1.5}
+
+  /* boba */
+  .boba{animation:bob 2.4s ease-in-out infinite;transform-box:fill-box}
+  .boba:nth-child(2n){animation-delay:.4s}.boba:nth-child(3n){animation-delay:.9s}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+  .steam{stroke-dasharray:30;animation:steam 2.5s ease-in-out infinite;opacity:.7}
+  .steam:nth-child(2){animation-delay:.8s}
+  @keyframes steam{0%{transform:translateY(8px);opacity:0}50%{opacity:.8}100%{transform:translateY(-8px);opacity:0}}
+  .straw{transform-origin:50% 100%;transform-box:fill-box;animation:strawwig 3s ease-in-out infinite}
+  @keyframes strawwig{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
+
+  .wishes{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+  .wishes span{
+    background:#fff;padding:12px 20px;border-radius:30px;
+    box-shadow:0 4px 12px rgba(0,0,0,.1);font-size:1.05rem;
+    animation:float2 3s ease-in-out infinite;
+  }
+  .wishes span:nth-child(2n){animation-delay:.7s;background:#f1fbe9}
+  .wishes span:nth-child(3n){animation-delay:1.4s;background:#fff0f4}
+  @keyframes float2{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+  footer{margin-top:60px;font-size:1.1rem;color:var(--brown)}
+  @media (prefers-reduced-motion:reduce){*{animation-duration:0s!important;animation-iteration-count:1!important}}
+
+  /* collage */
+  .collage{position:relative;width:100%;max-width:880px;margin:0 auto;aspect-ratio:4/3.4}
+  .it{position:absolute;--r:0deg;transform:rotate(var(--r));animation:drift 5s ease-in-out infinite;
+    filter:drop-shadow(0 8px 10px rgba(120,80,60,.2));transition:filter .2s}
+  .it:hover{z-index:20;filter:drop-shadow(0 12px 16px rgba(120,80,60,.35))}
+  .it svg{width:100%;height:auto;display:block}
+  @keyframes drift{0%,100%{transform:translateY(0) rotate(var(--r))}50%{transform:translateY(-10px) rotate(calc(var(--r) + 3deg))}}
+  .polaroid{background:#fffdf6;border-radius:18px;padding:3% 3% 2%;border:3px solid #fff}
+  .polaroid .cap{font-size:clamp(.7rem,2.2vw,1.1rem);color:var(--brown);margin-top:2px;font-weight:bold}
+  .ln{fill:none;stroke:#e2573a;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;
+    stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1.6s ease forwards}
+  .ln.thin{stroke-width:1.4}
+  .ln.wave{stroke:#6fb3d9;stroke-width:2.2}
+  @keyframes draw{to{stroke-dashoffset:0}}
+  .sticker{background:#fff;border-radius:22px;padding:10px 14px;font-weight:bold;color:var(--matcha-d);
+    font-size:clamp(.7rem,2.6vw,1.3rem);line-height:1.3;border:3px dashed var(--pink)}
+  .em{position:absolute;font-size:clamp(1rem,4vw,2rem);animation:twinkle 2.4s ease-in-out infinite}
+  @keyframes twinkle{0%,100%{transform:scale(1) rotate(0)}50%{transform:scale(1.35) rotate(15deg)}}
+  .pearl{position:absolute;border-radius:50%;background:radial-gradient(circle at 30% 30%,#7a5640,#3a241a);animation:bob 2.6s ease-in-out infinite}
+
+  .tail{transform-box:fill-box;transform-origin:0% 100%;animation:wag .5s ease-in-out infinite alternate}
+  @keyframes wag{from{transform:rotate(-18deg)}to{transform:rotate(18deg)}}
+  .pant{transform-box:fill-box;transform-origin:50% 0%;animation:pant .6s ease-in-out infinite alternate}
+  @keyframes pant{from{transform:scaleY(.8)}to{transform:scaleY(1.15)}}
+
+  .love{display:block;text-align:center;font-size:clamp(2rem,9vw,4.5rem);line-height:1;animation:beat 1.4s ease-in-out infinite}
+  @keyframes beat{0%,100%{transform:scale(1)}15%{transform:scale(1.2)}30%{transform:scale(1)}45%{transform:scale(1.12)}}
+</style>
+</head>
+<body>
+<canvas id="confetti"></canvas>
+<div class="float-layer" id="bubbles"></div>
+
+<main>
+  <h1 id="title" aria-label="Happy Birthday Gilly!"></h1>
+  <p class="sub" id="typed"></p>
+
+  <!-- original mascot: a little matcha sprout spirit -->
+  <div class="mascot" id="mascot" title="Click me!">
+    <svg viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="100" cy="205" rx="55" ry="9" fill="rgba(0,0,0,.12)"/>
+      <g class="sprout">
+        <path d="M100 55 C100 40 100 30 100 22" stroke="#5e9a4b" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <path d="M100 30 C80 10 60 22 66 38 C82 42 96 38 100 30Z" fill="#7cc060"/>
+        <path d="M100 30 C120 6 142 18 134 36 C118 42 104 38 100 30Z" fill="#94d276"/>
+      </g>
+      <path d="M100 52 C45 52 28 110 32 150 C36 190 70 200 100 200 C130 200 164 190 168 150 C172 110 155 52 100 52Z" fill="#b9e29c"/>
+      <path d="M100 70 C65 70 50 112 54 148 C58 182 80 190 100 190 C120 190 142 182 146 148 C150 112 135 70 100 70Z" fill="#d6f0c0" opacity=".7"/>
+      <g class="eye"><ellipse cx="74" cy="118" rx="8" ry="11" fill="#3b2c25"/><circle cx="77" cy="113" r="3" fill="#fff"/></g>
+      <g class="eye"><ellipse cx="126" cy="118" rx="8" ry="11" fill="#3b2c25"/><circle cx="129" cy="113" r="3" fill="#fff"/></g>
+      <ellipse cx="58" cy="140" rx="11" ry="7" fill="#ffa5bb" opacity=".8"/>
+      <ellipse cx="142" cy="140" rx="11" ry="7" fill="#ffa5bb" opacity=".8"/>
+      <path d="M88 138 Q100 152 112 138" stroke="#3b2c25" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <g class="hat">
+        <path d="M130 62 L150 28 L170 66Z" fill="#ff9fb8"/>
+        <circle cx="150" cy="26" r="6" fill="#fff"/>
+        <circle cx="146" cy="50" r="3" fill="#fff"/><circle cx="154" cy="58" r="3" fill="#fff"/>
+      </g>
+    </svg>
+  </div>
+
+  <button class="wish" id="wishBtn">🎂 Make a wish, Gilly!</button>
+  <div id="wishText"></div>
+
+  <section>
+    <div class="collage" id="collage"></div>
+  </section>
+
+  <section>
+    <h2>Birthday Wishes ✨</h2>
+    <div class="wishes">
+      <span>🍵 Endless matcha</span>
+      <span>🧋 Extra boba</span>
+      <span>🎬 Made in Heaven Nights</span>
+      <span>💖 Lots of laughs</span>
+      <span>🎁 Perfect presents</span>
+    </div>
+  </section>
+
+  <footer>With all the love and a huge pot of tea. Have the sweetest birthday, Gilly! 🎉</footer>
+</main>
+
+<script>
+/* Animated title */
+const title=document.getElementById('title');
+"Happy Birthday Gilly!".split('').forEach((ch,i)=>{
+  const s=document.createElement('span');
+  s.textContent=ch===' '?'\u00A0':ch;
+  s.style.animationDelay=(i*0.1)+'s';
+  title.appendChild(s);
+});
+
+/* Typewriter */
+const lines=["Today is all about you 💚","Matcha, boba and good vibes only 🧋🍵","Make it a magical one! ✨"];
+const typed=document.getElementById('typed');
+let li=0,ci=0,del=false;
+(function tick(){
+  const t=lines[li];
+  typed.textContent=t.slice(0,ci);
+  if(!del&&ci<t.length){ci++;setTimeout(tick,70)}
+  else if(!del){del=true;setTimeout(tick,1500)}
+  else if(ci>0){ci--;setTimeout(tick,30)}
+  else{del=false;li=(li+1)%lines.length;setTimeout(tick,300)}
+})();
+
+/* Floating bubbles */
+const bl=document.getElementById('bubbles');
+for(let i=0;i<22;i++){
+  const b=document.createElement('div');b.className='float';
+  const s=14+Math.random()*44;
+  b.style.cssText=`width:${s}px;height:${s}px;left:${Math.random()*100}%;animation-duration:${8+Math.random()*10}s;animation-delay:${-Math.random()*14}s`;
+  bl.appendChild(b);
+}
+/* Falling leaves */
+["🍃","🌿","🍀"].forEach((e,k)=>{
+  for(let i=0;i<5;i++){
+    const l=document.createElement('div');l.className='leaf';l.textContent=e;
+    l.style.left=Math.random()*100+'%';
+    l.style.animationDuration=(9+Math.random()*9)+'s';
+    l.style.animationDelay=(-Math.random()*12)+'s';
+    document.body.appendChild(l);
+  }
+});
+
+/* Confetti */
+const cv=document.getElementById('confetti'),cx=cv.getContext('2d');
+function size(){cv.width=innerWidth;cv.height=innerHeight}
+size();addEventListener('resize',size);
+let parts=[];
+const cols=['#a8d08d','#ffb6c8','#ffe28a','#e8c9a0','#c7a6ff','#8fd3f4'];
+function burst(x,y,n=120){
+  for(let i=0;i<n;i++){
+    const a=Math.random()*Math.PI*2,v=4+Math.random()*9;
+    parts.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-5,g:.25,r:4+Math.random()*5,
+      c:cols[Math.random()*cols.length|0],rot:Math.random()*6,vr:(Math.random()-.5)*.4,life:140+Math.random()*60});
+  }
+}
+(function loop(){
+  cx.clearRect(0,0,cv.width,cv.height);
+  parts=parts.filter(p=>p.life>0);
+  parts.forEach(p=>{
+    p.vy+=p.g;p.x+=p.vx;p.y+=p.vy;p.vx*=.99;p.rot+=p.vr;p.life--;
+    cx.save();cx.translate(p.x,p.y);cx.rotate(p.rot);
+    cx.globalAlpha=Math.min(1,p.life/40);
+    cx.fillStyle=p.c;cx.fillRect(-p.r,-p.r/2,p.r*2,p.r);cx.restore();
+  });
+  requestAnimationFrame(loop);
+})();
+
+/* Wish button + mascot click */
+const msgs=["May all your wishes come true! 🌟","A year full of matcha and boba! 🍵🧋","Cozy, happy and loved. That's you! 💚","Made in Heaven Nights ahead! 🎬","Make it your best year yet! 🎉"];
+let mi=0;
+document.getElementById('wishBtn').addEventListener('click',e=>{
+  burst(innerWidth/2,innerHeight/3,160);
+  burst(innerWidth*.2,innerHeight/2,70);
+  burst(innerWidth*.8,innerHeight/2,70);
+  document.getElementById('wishText').textContent=msgs[mi++%msgs.length];
+});
+document.getElementById('mascot').addEventListener('click',e=>burst(e.clientX,e.clientY,70));
+setTimeout(()=>burst(innerWidth/2,innerHeight/3,150),600);
+addEventListener('click',e=>{if(e.target.tagName!=='BUTTON')burst(e.clientX,e.clientY,30)});
+
+/* ---------- Collage ---------- */
+let lnI=0;
+const ln=(tag,attrs,cls='')=>`<${tag} class="ln ${cls}" pathLength="1" ${attrs} style="animation-delay:${(lnI++*0.04).toFixed(2)}s"/>`;
+
+function bridgeSVG(){
+  lnI=0;
+  const quad=(a,b,c,t)=>{const u=1-t;return [u*u*a[0]+2*u*t*b[0]+t*t*c[0],u*u*a[1]+2*u*t*b[1]+t*t*c[1]]};
+  const spans=[[[0,118],[55,118],[110,30]],[[110,30],[200,170],[290,30]],[[290,30],[345,118],[400,118]]];
+  let out='';
+  [110,290].forEach(x=>{
+    out+=ln('path',`d="M${x-7} 150 V24 M${x+7} 150 V24 M${x-9} 22 H${x+9}"`);
+    [46,72,98,124].forEach(y=>{out+=ln('path',`d="M${x-7} ${y} H${x+7} M${x-7} ${y} L${x+7} ${y+26} M${x+7} ${y} L${x-7} ${y+26}"`,'thin')});
+  });
+  spans.forEach((sp,i)=>{
+    out+=ln('path',`d="M${sp[0]} Q${sp[1]} ${sp[2]}"`);
+    const n=i==1?16:6;
+    for(let k=1;k<n;k++){
+      const [x,y]=quad(sp[0],sp[1],sp[2],k/n);
+      if(Math.abs(x-110)<10||Math.abs(x-290)<10)continue;
+      out+=ln('line',`x1="${x}" y1="${y}" x2="${x}" y2="130"`,'thin');
+    }
+  });
+  out+=ln('path','d="M0 130 H400 M0 137 H400"');
+  out+=ln('path','d="M0 168'+' q10 -7 20 0 t20 0'.repeat(20)+'"','wave');
+  out+=ln('path','d="M-10 184'+' q10 -7 20 0 t20 0'.repeat(21)+'"','wave');
+  return `<div class="polaroid"><svg viewBox="0 0 400 195" xmlns="http://www.w3.org/2000/svg">${out}</svg><div class="cap">San Francisco, here she comes 🌉</div></div>`;
+}
+
+function teaSVG(liquid,top,straw){
+  return `<svg viewBox="0 0 130 170" xmlns="http://www.w3.org/2000/svg">
+  <g class="straw"><rect x="70" y="2" width="9" height="70" rx="4" fill="${straw}" transform="rotate(8 74 40)"/></g>
+  <path d="M22 40 H108 L98 158 Q97 166 89 166 H41 Q33 166 32 158Z" fill="#fff8f0" stroke="#ead6bd" stroke-width="3"/>
+  <path d="M26 66 H104 L98 158 Q97 166 89 166 H41 Q33 166 32 158Z" fill="${liquid}"/>
+  <path d="M18 36 Q65 18 112 36 V44 H18Z" fill="${top}" stroke="#fff" stroke-width="3"/>
+  <g fill="#4a2f22">
+    <circle class="boba" cx="46" cy="148" r="7"/><circle class="boba" cx="62" cy="150" r="7"/><circle class="boba" cx="78" cy="148" r="7"/>
+    <circle class="boba" cx="54" cy="136" r="7"/><circle class="boba" cx="70" cy="136" r="7"/><circle class="boba" cx="86" cy="138" r="7"/>
+    <circle class="boba" cx="62" cy="123" r="7"/></g>
+  <circle cx="52" cy="92" r="4" fill="#fff" opacity=".7"/><circle cx="60" cy="96" r="3" fill="#fff" opacity=".7"/></svg>`;
+}
+const matchaCupSVG=`<svg viewBox="0 0 130 170" xmlns="http://www.w3.org/2000/svg">
+  <g fill="none" stroke="#9bc886" stroke-width="5" stroke-linecap="round">
+    <path class="steam" d="M45 55 Q38 40 46 28 Q54 16 46 6"/><path class="steam" d="M70 55 Q63 40 71 28 Q79 16 71 6"/><path class="steam" d="M95 55 Q88 40 96 28 Q104 16 96 6"/></g>
+  <path d="M20 72 H110 Q110 148 65 148 Q20 148 20 72Z" fill="#fff" stroke="#d8d0c4" stroke-width="3"/>
+  <path d="M24 76 H106 Q106 140 65 140 Q24 140 24 76Z" fill="#9fcf7f"/>
+  <path d="M26 82 Q65 96 104 82" stroke="#e9f6dc" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <path d="M110 86 Q138 86 130 112 Q124 128 104 126" fill="none" stroke="#d8d0c4" stroke-width="7" stroke-linecap="round"/>
+  <ellipse cx="65" cy="156" rx="48" ry="8" fill="#e9dfcf"/>
+  <circle cx="50" cy="104" r="3" fill="#3b2c25"/><circle cx="80" cy="104" r="3" fill="#3b2c25"/>
+  <path d="M57 112 Q65 119 73 112" stroke="#3b2c25" stroke-width="3" fill="none" stroke-linecap="round"/></svg>`;
+const sproutSVG=document.querySelector('#mascot svg').outerHTML;
+const cloudSVG=`<svg viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg">
+  <path d="M50 120 C20 120 12 86 40 80 C36 50 78 40 92 62 C106 36 150 46 148 78 C180 78 184 120 150 120Z" fill="#ffffff" stroke="#d9ecf7" stroke-width="4"/>
+  <g class="eye"><ellipse cx="82" cy="92" rx="5" ry="7" fill="#3b2c25"/></g><g class="eye"><ellipse cx="118" cy="92" rx="5" ry="7" fill="#3b2c25"/></g>
+  <ellipse cx="68" cy="104" rx="8" ry="5" fill="#ffa5bb" opacity=".8"/><ellipse cx="132" cy="104" rx="8" ry="5" fill="#ffa5bb" opacity=".8"/>
+  <path d="M92 102 Q100 110 108 102" stroke="#3b2c25" stroke-width="3" fill="none" stroke-linecap="round"/></svg>`;
+const heartSVG=`<svg viewBox="0 0 100 90" xmlns="http://www.w3.org/2000/svg"><path d="M50 84 C10 56 4 28 24 14 C38 4 50 14 50 24 C50 14 62 4 76 14 C96 28 90 56 50 84Z" fill="#ffb6c8" stroke="#fff" stroke-width="4"/></svg>`;
+
+const dogSVG=`<svg viewBox="0 0 240 130" xmlns="http://www.w3.org/2000/svg">
+  <ellipse cx="120" cy="120" rx="95" ry="7" fill="rgba(0,0,0,.12)"/>
+  <g class="tail"><path d="M192 62 Q222 44 230 20" stroke="#8c532c" stroke-width="12" fill="none" stroke-linecap="round"/></g>
+  <g fill="#8c532c"><rect x="64" y="82" width="15" height="32" rx="7"/><rect x="88" y="82" width="15" height="32" rx="7"/>
+  <rect x="150" y="82" width="15" height="32" rx="7"/><rect x="174" y="82" width="15" height="32" rx="7"/></g>
+  <rect x="58" y="46" width="140" height="44" rx="22" fill="#a8683a"/>
+  <ellipse cx="130" cy="80" rx="58" ry="8" fill="#c98b5a" opacity=".6"/>
+  <circle cx="58" cy="52" r="26" fill="#a8683a"/>
+  <ellipse cx="30" cy="62" rx="22" ry="14" fill="#b9784a"/>
+  <circle cx="11" cy="58" r="6" fill="#2d1d17"/>
+  <path d="M72 70 L100 64 L88 92Z" fill="#8cc572"/>
+  <g class="eye"><circle cx="48" cy="46" r="5" fill="#2d1d17"/><circle cx="50" cy="44" r="1.8" fill="#fff"/></g>
+  <ellipse cx="44" cy="63" rx="6" ry="4" fill="#ff9fb8" opacity=".7"/>
+  <path d="M18 68 Q28 76 38 68" stroke="#2d1d17" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <g class="pant"><ellipse cx="28" cy="76" rx="5" ry="7" fill="#ff8fa8"/></g>
+  <ellipse cx="74" cy="60" rx="11" ry="22" fill="#7a4423" transform="rotate(12 74 60)"/>
+  <text x="104" y="28" font-size="22" text-anchor="middle">💚</text></svg>`;
+const items=[
+  {h:bridgeSVG(),l:2,t:2,w:58,r:-3,d:0},
+  {h:teaSVG('#e8c9a0','#ffd6e1','#ff7fa3'),l:64,t:0,w:17,r:6,d:.3},
+  {h:teaSVG('#c9b3f0','#e7dcff','#8c6fd6'),l:83,t:12,w:14,r:-8,d:.9},
+  {h:matchaCupSVG,l:66,t:30,w:20,r:4,d:.5},
+  {h:teaSVG('#a8d08d','#eaf7dc','#5e9a4b'),l:4,t:50,w:16,r:-6,d:1.1},
+  {h:sproutSVG,l:33,t:50,w:24,r:0,d:0},
+  {h:cloudSVG,l:15,t:74,w:20,r:5,d:.7},
+  {h:dogSVG,l:38,t:79,w:28,r:-2,d:.6},
+  {h:`<span class="love">💌</span>`,l:87,t:34,w:11,r:8,d:.2},
+  {h:heartSVG,l:58,t:56,w:9,r:-12,d:.2},
+  {h:heartSVG,l:90,t:48,w:7,r:14,d:1.3},
+  {h:`<div class="sticker">Matcha<br>+ boba =<br>💚 forever</div>`,l:70,t:62,w:22,r:-5,d:.4},
+  {h:`<div class="sticker" style="border-color:var(--matcha)">SF bound ✈️</div>`,l:44,t:34,w:14,r:7,d:.8},
+];
+const col=document.getElementById('collage');
+items.forEach(it=>{
+  const e=document.createElement('div');e.className='it';
+  e.style.cssText=`left:${it.l}%;top:${it.t}%;width:${it.w}%;--r:${it.r}deg;animation-delay:${it.d}s`;
+  e.innerHTML=it.h;col.appendChild(e);
+});
+[['💛',60,48],['✨',2,40],['🍵',54,92],['🧋',88,80],['🌉',40,24],['✨',96,35],['🍃',24,48],['💖',46,85],['⭐',62,24],['🌱',80,95]].forEach(([c,x,y],i)=>{
+  const e=document.createElement('div');e.className='em';e.textContent=c;
+  e.style.cssText=`left:${x}%;top:${y}%;animation-delay:${i*.3}s`;col.appendChild(e);
+});
+for(let i=0;i<14;i++){
+  const p=document.createElement('div');p.className='pearl';
+  const sz=1.2+Math.random()*1.4;
+  p.style.cssText=`width:${sz}%;aspect-ratio:1;left:${Math.random()*96}%;top:${Math.random()*96}%;animation-delay:${Math.random()*2}s`;
+  col.appendChild(p);
+}
+</script>
+</body>
+</html>
